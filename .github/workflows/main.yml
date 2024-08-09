@@ -20,6 +20,8 @@ jobs:
           arguments: build
       # - run: ./gradlew checkstyleMain
       # - run: ./gradlew test
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
       - name: Publish code coverage
         uses: paambaati/codeclimate-action@v5.0.0
         env:
