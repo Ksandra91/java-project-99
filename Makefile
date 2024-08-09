@@ -27,7 +27,7 @@ test:
 	./gradlew test
 
 report:
-	./gradlew jacocoTestCoverage jacocoTestReport
+	./gradlew jacocoTestReport
 
 build-run: build run
 
