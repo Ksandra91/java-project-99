@@ -58,6 +58,7 @@ public class UserControllerTest {
     private ModelGenerator modelGenerator;
 
     private User testUser;
+    private User testUser2;
 
     @BeforeEach
     public void setUp() {
@@ -66,6 +67,7 @@ public class UserControllerTest {
                 .apply(springSecurity())
                 .build();
         testUser = Instancio.of(modelGenerator.getUserModel()).create();
+        testUser2 = Instancio.of(modelGenerator.getUserModel()).create();
     }
 
 
@@ -102,17 +104,17 @@ public class UserControllerTest {
 
         var request = post("/api/users").with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(om.writeValueAsString(testUser));
+                .content(om.writeValueAsString(testUser2));
 
         mockMvc.perform(request)
                 .andExpect(status().isCreated());
 
-        var user = userRepository.findByEmail(testUser.getEmail()).get();
+        var user = userRepository.findByEmail(testUser2.getEmail()).get();
 
         assertThat(user).isNotNull();
-        assertThat(user.getFirstName()).isEqualTo(testUser.getFirstName());
-        assertThat(user.getEmail()).isEqualTo(testUser.getEmail());
-        assertThat(user.getPasswordDigest()).isNotEqualTo(testUser.getPasswordDigest());
+        assertThat(user.getFirstName()).isEqualTo(testUser2.getFirstName());
+        assertThat(user.getEmail()).isEqualTo(testUser2.getEmail());
+        assertThat(user.getPasswordDigest()).isNotEqualTo(testUser2.getPasswordDigest());
     }
 
     @Test
