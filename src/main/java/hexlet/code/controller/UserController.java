@@ -9,6 +9,7 @@ import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,25 +29,25 @@ public class UserController {
     private UserRepository repository;
 
     @Autowired
-    private UserMapper postMapper;
+    private UserMapper userMapper;
 
     @GetMapping("/users")
-    @ResponseStatus(HttpStatus.OK)
-    public List<UserDTO> index() {
+    ResponseEntity<List<UserDTO>> index() {
         var users = repository.findAll();
         var result = users.stream()
-                .map(postMapper::map)
+                .map(userMapper::map)
                 .toList();
-
-        return result;
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(users.size()))
+                .body(result);
     }
 
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     public UserDTO create(@Valid @RequestBody UserCreateDTO userData) {
-        var user = postMapper.map(userData);
+        var user = userMapper.map(userData);
         repository.save(user);
-        var userDTO = postMapper.map(user);
+        var userDTO = userMapper.map(user);
         return userDTO;
     }
 
@@ -55,7 +56,7 @@ public class UserController {
     public UserDTO show(@PathVariable Long id) {
         var user = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not Found: " + id));
-        var userDTO = postMapper.map(user);
+        var userDTO = userMapper.map(user);
         return userDTO;
     }
 
@@ -64,9 +65,9 @@ public class UserController {
     public UserDTO update(@RequestBody @Valid UserUpdateDTO userData, @PathVariable Long id) {
         var user = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not Found: " + id));
-        postMapper.update(userData, user);
+        userMapper.update(userData, user);
         repository.save(user);
-        var userDTO = postMapper.map(user);
+        var userDTO = userMapper.map(user);
         return userDTO;
     }
 
