@@ -1,5 +1,6 @@
 package hexlet.code.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,7 +22,7 @@ public class AuthenticationController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/login")
-    public String create(@RequestBody AuthRequest authRequest) {
+    public String create(@RequestBody @Valid AuthRequest authRequest) {
         var authentication = new UsernamePasswordAuthenticationToken(
                 authRequest.getUsername(), authRequest.getPassword());
 
