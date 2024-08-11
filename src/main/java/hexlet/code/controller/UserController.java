@@ -10,6 +10,7 @@ import hexlet.code.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,10 @@ public class UserController {
 
     @Autowired
     private UserMapper userMapper;
+
+    private static final String ONLY_OWNER = """
+                @userRepository.findById(#id).get().getEmail() == authentication.getName()
+            """;
 
     @GetMapping("/users")
     ResponseEntity<List<UserDTO>> index() {
@@ -61,6 +66,7 @@ public class UserController {
     }
 
     @PutMapping("/users/{id}")
+    @PreAuthorize(ONLY_OWNER)
     @ResponseStatus(HttpStatus.OK)
     public UserDTO update(@RequestBody @Valid UserUpdateDTO userData, @PathVariable Long id) {
         var user = repository.findById(id)
@@ -72,6 +78,7 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{id}")
+    @PreAuthorize(ONLY_OWNER)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         repository.deleteById(id);

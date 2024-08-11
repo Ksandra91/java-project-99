@@ -72,6 +72,7 @@ public class UserControllerTest {
 
     @BeforeEach
     public void setUp() {
+        userRepository.deleteAll();
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
                 .apply(springSecurity())
@@ -86,7 +87,7 @@ public class UserControllerTest {
 
     @Test
     public void testIndex() throws Exception {
-        userRepository.save(testUser);
+       // userRepository.save(testUser);
 
         var result = mockMvc.perform(get("/api/users").with(jwt()))
                 .andExpect(status().isOk())
@@ -98,7 +99,7 @@ public class UserControllerTest {
     @Test
     public void testShow() throws Exception {
 
-        userRepository.save(testUser);
+       // userRepository.save(testUser);
 
 
         var request = get("/api/users/" + testUser.getId()).with(jwt());
@@ -134,19 +135,22 @@ public class UserControllerTest {
 
     @Test
     public void testUpdate() throws Exception {
-
+        var testUser2 = Instancio.of(modelGenerator.getUserModel())
+                .create();
+        userRepository.save(testUser2);
+        var token2 = jwt().jwt(builder -> builder.subject(testUser2.getEmail()));
         var data = new HashMap<>();
         data.put("firstName", "first");
 
-        var request = put("/api/users/" + testUser.getId())
-                .with(token)
+        var request = put("/api/users/" + testUser2.getId())
+                .with(token2)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
 
         mockMvc.perform(request)
                 .andExpect(status().isOk());
 
-        var user = userRepository.findById(testUser.getId()).get();
+        var user = userRepository.findById(testUser2.getId()).get();
         assertThat(user.getFirstName()).isEqualTo(("first"));
     }
 
