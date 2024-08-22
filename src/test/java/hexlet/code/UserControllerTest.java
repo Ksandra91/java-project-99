@@ -37,7 +37,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import hexlet.code.model.User;
 import net.datafaker.Faker;
 import hexlet.code.util.ModelGenerator;
-import hexlet.code.dto.UserUpdateDTO;
+import hexlet.code.dto.User.UserUpdateDTO;
 
 
 @SpringBootTest

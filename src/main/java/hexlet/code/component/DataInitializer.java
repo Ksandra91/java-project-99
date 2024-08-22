@@ -39,25 +39,24 @@ public class DataInitializer implements ApplicationRunner {
         statusRepository.save(status1);
 
         TaskStatus status2 = new TaskStatus();
-        status1.setName("Review");
-        status1.setSlug("to_review");
+        status2.setName("Review");
+        status2.setSlug("to_review");
         statusRepository.save(status2);
 
         TaskStatus status3 = new TaskStatus();
-        status1.setName("ToBeFixed");
-        status1.setSlug("to_be_fixed");
+        status3.setName("ToBeFixed");
+        status3.setSlug("to_be_fixed");
         statusRepository.save(status3);
 
         TaskStatus status4 = new TaskStatus();
-        status1.setName("ToPublish");
-        status1.setSlug("to_publish");
+        status4.setName("ToPublish");
+        status4.setSlug("to_publish");
         statusRepository.save(status4);
 
         TaskStatus status5 = new TaskStatus();
-        status1.setName("Published");
-        status1.setSlug("published");
+        status5.setName("Published");
+        status5.setSlug("published");
         statusRepository.save(status5);
-
 
     }
 }
