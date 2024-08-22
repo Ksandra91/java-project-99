@@ -33,7 +33,7 @@ public class Task implements BaseEntity {
     private Long id;
 
     @NotBlank
-   // @NotNull
+    // @NotNull
     @Size(min = 1)
     private String name;
 
@@ -42,7 +42,7 @@ public class Task implements BaseEntity {
     private String description;
 
     @NotNull
-   // @NotBlank
+    // @NotBlank
     @ManyToOne(cascade = CascadeType.MERGE)
     private TaskStatus taskStatus;
 

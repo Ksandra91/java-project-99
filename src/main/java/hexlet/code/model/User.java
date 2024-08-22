@@ -62,7 +62,7 @@ public class User implements BaseEntity, UserDetails {
     private LocalDate updatedAt;
 
 
-    @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "assignee", cascade = CascadeType.MERGE)
     private Set<Task> tasks = new HashSet<>();
 
 

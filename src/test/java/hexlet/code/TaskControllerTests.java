@@ -2,7 +2,6 @@ package hexlet.code;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -10,8 +9,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import hexlet.code.dto.Task.TaskCreateDTO;
-import hexlet.code.dto.Task.TaskDTO;
-import hexlet.code.mapper.TaskStatusMapper;
 import hexlet.code.mapper.TaskMapper;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
@@ -21,7 +18,6 @@ import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.util.ModelGenerator;
 import org.instancio.Instancio;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,17 +65,14 @@ public class TaskControllerTests {
     @Autowired
     private TaskStatusRepository statusRepository;
 
-//    private User testUser;
-//    private TaskStatus testStatus;
-//    private Task testTask;
-
     private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
+
 
     @BeforeEach
     public void setUp() {
-//        userRepository.deleteAll();
-//        taskRepository.deleteAll();
-//        statusRepository.deleteAll();
+        taskRepository.deleteAll();
+        statusRepository.deleteAll();
+        userRepository.deleteAll();
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
                 .apply(springSecurity())
@@ -135,7 +128,6 @@ public class TaskControllerTests {
                 v -> v.node("title").isEqualTo(testTask.getName())
         );
 
-        //  taskRepository.delete(testTask);
     }
 
     @Test
@@ -149,32 +141,14 @@ public class TaskControllerTests {
         testStatus.setSlug("forTest1111");
         statusRepository.save(testStatus);
 
-        Task testTask = new Task();
-        testTask.setName("TaskName1111");
-        testTask.setAssignee(testUser);
-        testTask.setTaskStatus(testStatus);
-
-        TaskDTO dto = taskMapper.map(testTask);
-      //  taskRepository.save(testTask);
-
-
-//        var request = post("/api/tasks")
-//                .with(token)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(om.writeValueAsString(dto));
-//        mockMvc.perform(request)
-//                .andExpect(status().isCreated());
-//
-//        var task = taskRepository.findByName(testTask.getName()).get();
-//
-//        assertNotNull(task);
-//        assertThat(task.getName()).isEqualTo(testTask.getName());
-
-        //   taskRepository.delete(task);
+        TaskCreateDTO testTask = new TaskCreateDTO();
+        testTask.setTitle("TaskName1111");
+        testTask.setAssigneeId(testUser.getId());
+        testTask.setStatus(testStatus.getName());
 
         var request = post("/api/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(om.writeValueAsString(dto))
+                .content(om.writeValueAsString(testTask))
                 .with(token);
 
         var result = mockMvc.perform(request).andExpect(status().isCreated()).andReturn();
@@ -186,7 +160,7 @@ public class TaskControllerTests {
         var taskFromRepo = taskRepository.findById(id).get();
 
         assertThat(taskFromRepo).isNotNull();
-        assertThat(taskFromRepo.getName()).isEqualTo(testTask.getName());
+        assertThat(taskFromRepo.getName()).isEqualTo(testTask.getTitle());
     }
 
     @Test
