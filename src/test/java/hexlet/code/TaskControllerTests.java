@@ -18,6 +18,7 @@ import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.util.ModelGenerator;
 import org.instancio.Instancio;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,40 +66,47 @@ public class TaskControllerTests {
     @Autowired
     private TaskStatusRepository statusRepository;
 
+    private User testUser;
+    private TaskStatus testStatus;
+    Task testTask;
+
+
     private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
 
 
     @BeforeEach
     public void setUp() {
-        taskRepository.deleteAll();
-        statusRepository.deleteAll();
-        userRepository.deleteAll();
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
                 .apply(springSecurity())
                 .build();
-        token = jwt().jwt(builder -> builder.subject("hexlet@example.com"));
-    }
-
-
-    @Test
-    public void testIndex() throws Exception {
-        User testUser = Instancio.of(modelGenerator.getUserModel())
+        testUser = Instancio.of(modelGenerator.getUserModel())
                 .create();
         userRepository.save(testUser);
 
-        TaskStatus testStatus = new TaskStatus();
+        testStatus = new TaskStatus();
         testStatus.setName("TestStatus");
         testStatus.setSlug("forTest");
         statusRepository.save(testStatus);
 
-        Task testTask = new Task();
+        testTask = new Task();
         testTask.setName("TaskName");
         testTask.setAssignee(testUser);
         testTask.setTaskStatus(testStatus);
         taskRepository.save(testTask);
+        token = jwt().jwt(builder -> builder.subject(testUser.getEmail()));
+    }
 
-        var result = mockMvc.perform(get("/api/tasks").with(jwt()))
+    @AfterEach
+    public void clean() {
+        taskRepository.deleteAll();
+        statusRepository.deleteAll();
+        userRepository.deleteAll();
+    }
+
+    @Test
+    public void testIndex() throws Exception {
+        var result = mockMvc.perform(get("/api/tasks").with(token))
                 .andExpect(status().isOk())
                 .andReturn();
         var body = result.getResponse().getContentAsString();
@@ -107,17 +115,6 @@ public class TaskControllerTests {
 
     @Test
     public void testShow() throws Exception {
-        TaskStatus testStatus = new TaskStatus();
-        testStatus.setName("TestStatus2");
-        testStatus.setSlug("forTest");
-        statusRepository.save(testStatus);
-
-        Task testTask = new Task();
-        testTask.setName("TaskName2");
-        // testTask.setAssignee(testUser);
-        testTask.setTaskStatus(testStatus);
-        taskRepository.save(testTask);
-
         var request = get("/api/tasks/" + testTask.getId()).with(token);
         var result = mockMvc.perform(request)
                 .andExpect(status().isOk())
@@ -132,24 +129,26 @@ public class TaskControllerTests {
 
     @Test
     public void testCreate() throws Exception {
-        User testUser = Instancio.of(modelGenerator.getUserModel())
+        User testUser2 = Instancio.of(modelGenerator.getUserModel())
                 .create();
-        userRepository.save(testUser);
+        userRepository.save(testUser2);
 
-        TaskStatus testStatus = new TaskStatus();
-        testStatus.setName("TestStatus10");
-        testStatus.setSlug("forTest1111");
-        statusRepository.save(testStatus);
+        TaskStatus testStatus2 = new TaskStatus();
+        testStatus2.setName("TestStatus10");
+        testStatus2.setSlug("forTest1111");
+        statusRepository.save(testStatus2);
 
-        TaskCreateDTO testTask = new TaskCreateDTO();
-        testTask.setTitle("TaskName1111");
-        testTask.setAssigneeId(testUser.getId());
-        testTask.setStatus(testStatus.getName());
+        TaskCreateDTO testTask2 = new TaskCreateDTO();
+        testTask2.setTitle("TaskName1111");
+        testTask2.setAssigneeId(testUser.getId());
+        testTask2.setStatus(testStatus.getSlug());
+
+        var token2 = jwt().jwt(builder -> builder.subject(testUser2.getEmail()));
 
         var request = post("/api/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(om.writeValueAsString(testTask))
-                .with(token);
+                .content(om.writeValueAsString(testTask2))
+                .with(token2);
 
         var result = mockMvc.perform(request).andExpect(status().isCreated()).andReturn();
 
@@ -160,22 +159,11 @@ public class TaskControllerTests {
         var taskFromRepo = taskRepository.findById(id).get();
 
         assertThat(taskFromRepo).isNotNull();
-        assertThat(taskFromRepo.getName()).isEqualTo(testTask.getTitle());
+        assertThat(taskFromRepo.getName()).isEqualTo(testTask2.getTitle());
     }
 
     @Test
     public void testUpdate() throws Exception {
-        TaskStatus testStatus = new TaskStatus();
-        testStatus.setName("TestStatus4");
-        testStatus.setSlug("forTest");
-        statusRepository.save(testStatus);
-
-        Task testTask = new Task();
-        testTask.setName("TaskName4");
-        // testTask.setAssignee(testUser);
-        testTask.setTaskStatus(testStatus);
-        taskRepository.save(testTask);
-
         Map data = Map.of("title", "updateName");
 
         var request = put("/api/tasks/" + testTask.getId())
@@ -199,17 +187,6 @@ public class TaskControllerTests {
 
     @Test
     public void testDelete() throws Exception {
-        TaskStatus testStatus = new TaskStatus();
-        testStatus.setName("TestStatus5");
-        testStatus.setSlug("forTest");
-        statusRepository.save(testStatus);
-
-        Task testTask = new Task();
-        testTask.setName("TaskName5");
-        // testTask.setAssignee(testUser);
-        testTask.setTaskStatus(testStatus);
-        taskRepository.save(testTask);
-
         var request = delete("/api/tasks/" + testTask.getId())
                 .with(token);
         mockMvc.perform(request)

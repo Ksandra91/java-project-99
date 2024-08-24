@@ -13,6 +13,7 @@ import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.instancio.Instancio;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.jackson.nullable.JsonNullable;
@@ -72,7 +73,6 @@ public class UserControllerTest {
 
     @BeforeEach
     public void setUp() {
-        userRepository.deleteAll();
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
                 .apply(springSecurity())
@@ -84,11 +84,14 @@ public class UserControllerTest {
         userRepository.save(testUser);
     }
 
+    @AfterEach
+    public void clear() {
+        userRepository.deleteAll();
+    }
+
 
     @Test
     public void testIndex() throws Exception {
-       // userRepository.save(testUser);
-
         var result = mockMvc.perform(get("/api/users").with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -98,10 +101,6 @@ public class UserControllerTest {
 
     @Test
     public void testShow() throws Exception {
-
-       // userRepository.save(testUser);
-
-
         var request = get("/api/users/" + testUser.getId()).with(jwt());
         var result = mockMvc.perform(request)
                 .andExpect(status().isOk())

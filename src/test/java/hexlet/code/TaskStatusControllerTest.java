@@ -13,13 +13,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import hexlet.code.mapper.TaskStatusMapper;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.TaskStatusRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -51,8 +51,7 @@ public class TaskStatusControllerTest {
 
     @Autowired
     private TaskStatusRepository statusRepository;
-
-    private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
+    TaskStatus testStatus;
 
     @BeforeEach
     public void setUp() {
@@ -60,8 +59,15 @@ public class TaskStatusControllerTest {
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
                 .apply(springSecurity())
                 .build();
-        token = jwt().jwt(builder -> builder.subject("hexlet@example.com"));
+        testStatus = new TaskStatus();
+        testStatus.setSlug("test");
+        testStatus.setName("t");
+        statusRepository.save(testStatus);
+    }
 
+    @AfterEach
+    public void clean() {
+        statusRepository.deleteAll();
     }
 
     @Test
@@ -75,11 +81,7 @@ public class TaskStatusControllerTest {
 
     @Test
     public void testShow() throws Exception {
-        TaskStatus testStatus = new TaskStatus();
-        testStatus.setSlug("test");
-        testStatus.setName("t");
-        statusRepository.save(testStatus);
-        var request = get("/api/task_statuses/" + testStatus.getId()).with(token);
+        var request = get("/api/task_statuses/" + testStatus.getId()).with(jwt());
         var result = mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andReturn();
@@ -88,8 +90,6 @@ public class TaskStatusControllerTest {
         assertThatJson(body).and(
                 v -> v.node("slug").isEqualTo(testStatus.getSlug())
         );
-
-        statusRepository.delete(testStatus);
     }
 
     @Test
@@ -99,7 +99,7 @@ public class TaskStatusControllerTest {
         data.setName("TestStatus2");
 
         var request = post("/api/task_statuses")
-                .with(token)
+                .with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
         mockMvc.perform(request)
@@ -110,30 +110,22 @@ public class TaskStatusControllerTest {
         assertNotNull(status);
         assertThat(status.getName()).isEqualTo(data.getName());
 
-        statusRepository.delete(status);
     }
 
     @Test
     public void testUpdate() throws Exception {
-        var test = new TaskStatus();
-        test.setSlug("test3");
-        test.setName("TestStatus3");
-        statusRepository.save(test);
-
         Map data = Map.of("name", "updateName");
 
-        var request = put("/api/task_statuses/" + test.getId())
-                .with(token)
+        var request = put("/api/task_statuses/" + testStatus.getId())
+                .with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
 
         mockMvc.perform(request)
                 .andExpect(status().isOk());
 
-        var status = statusRepository.findById(test.getId()).get();
+        var status = statusRepository.findById(testStatus.getId()).get();
         assertThat(status.getName()).isEqualTo(("updateName"));
-
-        statusRepository.delete(test);
     }
 
     @Test
@@ -150,7 +142,7 @@ public class TaskStatusControllerTest {
         statusRepository.save(test);
 
         var request = delete("/api/task_statuses/" + test.getId())
-                .with(token);
+                .with(jwt());
         mockMvc.perform(request)
                 .andExpect(status().isNoContent());
     }

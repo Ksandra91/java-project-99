@@ -5,8 +5,6 @@ import java.util.List;
 import hexlet.code.dto.Task.TaskCreateDTO;
 import hexlet.code.dto.Task.TaskDTO;
 import hexlet.code.dto.Task.TaskUpdateDTO;
-import hexlet.code.dto.TaskStatus.TaskStatusDTO;
-import hexlet.code.dto.TaskStatus.TaskStatusUpdateDTO;
 import hexlet.code.mapper.TaskMapper;
 
 import hexlet.code.repository.TaskRepository;
