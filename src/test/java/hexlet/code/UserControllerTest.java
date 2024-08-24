@@ -10,7 +10,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import hexlet.code.mapper.UserMapper;
+import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.UserRepository;
+import hexlet.code.repository.LabelRepository;
+import hexlet.code.repository.TaskStatusRepository;
 import org.assertj.core.api.Assertions;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterEach;
@@ -58,6 +61,12 @@ public class UserControllerTest {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private TaskRepository taskRepository;
+    @Autowired
+    private LabelRepository labelRepository;
+    @Autowired
+    private TaskStatusRepository statusRepository;
 
     // Нужно создать бин
     @Autowired
@@ -85,7 +94,10 @@ public class UserControllerTest {
     }
 
     @AfterEach
-    public void clear() {
+    public void clean() {
+        taskRepository.deleteAll();
+        statusRepository.deleteAll();
+        labelRepository.deleteAll();
         userRepository.deleteAll();
     }
 
@@ -155,7 +167,6 @@ public class UserControllerTest {
 
     @Test
     public void testIndexWithoutAuth() throws Exception {
-        userRepository.save(testUser);
         var result = mockMvc.perform(get("/api/users"))
                 .andExpect(status().isUnauthorized());
 
@@ -163,9 +174,6 @@ public class UserControllerTest {
 
     @Test
     public void testShowWithoutAuth() throws Exception {
-
-        userRepository.save(testUser);
-
         var request = get("/api/users/" + testUser.getId());
         var result = mockMvc.perform(request)
                 .andExpect(status().isUnauthorized());
@@ -173,7 +181,6 @@ public class UserControllerTest {
 
     @Test
     public void testUpdateAnotherUser() throws Exception {
-
         var user = Instancio.of(modelGenerator.getUserModel())
                 .create();
         userRepository.save(user);

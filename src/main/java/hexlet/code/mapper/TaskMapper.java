@@ -4,8 +4,10 @@ import hexlet.code.dto.Task.TaskCreateDTO;
 import hexlet.code.dto.Task.TaskDTO;
 import hexlet.code.dto.Task.TaskUpdateDTO;
 import hexlet.code.exception.ResourceNotFoundException;
+import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import org.mapstruct.Mapper;
@@ -17,6 +19,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.List;
 
 @Mapper(
         uses = {JsonNullableMapper.class, ReferenceMapper.class},
@@ -33,10 +37,14 @@ public abstract class TaskMapper {
     @Autowired
     private TaskStatusRepository statusRepository;
 
+    @Autowired
+    private LabelRepository labelRepository;
+
     @Mapping(source = "title", target = "name")
     @Mapping(source = "content", target = "description")
     @Mapping(source = "status", target = "taskStatus", qualifiedByName = "statusSlug")
     @Mapping(source = "assigneeId", target = "assignee.id")
+    @Mapping(source = "labelsId", target = "labels", qualifiedByName = "labels")
     public abstract Task map(TaskCreateDTO taskCreateDTO);
 
 
@@ -51,6 +59,7 @@ public abstract class TaskMapper {
     @Mapping(source = "content", target = "description")
     @Mapping(source = "assigneeId", target = "assignee")
     @Mapping(source = "status", target = "taskStatus")
+    @Mapping(source = "labelsId", target = "labels", qualifiedByName = "labels")
     public abstract void update(TaskUpdateDTO taskUpdateDTO, @MappingTarget Task task);
 
 
@@ -58,6 +67,11 @@ public abstract class TaskMapper {
     public TaskStatus statusSlugToModel(String slug) {
         return statusRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResourceNotFoundException("Not Found: " + slug));
+    }
+
+    @Named("labels")
+    public List<Label> labelIdtoModel(List<Long> labelIds) {
+        return labelIds == null ? new ArrayList<>() : labelRepository.findAllById(labelIds);
     }
 }
 

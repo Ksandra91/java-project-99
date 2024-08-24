@@ -10,9 +10,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import hexlet.code.dto.Task.TaskCreateDTO;
 import hexlet.code.mapper.TaskMapper;
+import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
@@ -32,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.web.context.WebApplicationContext;
@@ -66,9 +69,13 @@ public class TaskControllerTests {
     @Autowired
     private TaskStatusRepository statusRepository;
 
+    @Autowired
+    private LabelRepository labelRepository;
+
     private User testUser;
     private TaskStatus testStatus;
-    Task testTask;
+    private Label testLabel;
+    private Task testTask;
 
 
     private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
@@ -89,10 +96,15 @@ public class TaskControllerTests {
         testStatus.setSlug("forTest");
         statusRepository.save(testStatus);
 
+        testLabel = new Label();
+        testLabel.setName("testLabel");
+        labelRepository.save(testLabel);
+
         testTask = new Task();
         testTask.setName("TaskName");
         testTask.setAssignee(testUser);
         testTask.setTaskStatus(testStatus);
+        testTask.setLabels(List.of(testLabel));
         taskRepository.save(testTask);
         token = jwt().jwt(builder -> builder.subject(testUser.getEmail()));
     }
@@ -101,6 +113,7 @@ public class TaskControllerTests {
     public void clean() {
         taskRepository.deleteAll();
         statusRepository.deleteAll();
+        labelRepository.deleteAll();
         userRepository.deleteAll();
     }
 
@@ -138,10 +151,15 @@ public class TaskControllerTests {
         testStatus2.setSlug("forTest1111");
         statusRepository.save(testStatus2);
 
+        Label testLabel2 = new Label();
+        testLabel2.setName("testLabel1111111");
+        labelRepository.save(testLabel2);
+
         TaskCreateDTO testTask2 = new TaskCreateDTO();
         testTask2.setTitle("TaskName1111");
         testTask2.setAssigneeId(testUser.getId());
         testTask2.setStatus(testStatus.getSlug());
+        testTask2.setLabelsId(List.of(testLabel2.getId()));
 
         var token2 = jwt().jwt(builder -> builder.subject(testUser2.getEmail()));
 

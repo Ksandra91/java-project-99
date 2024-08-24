@@ -1,7 +1,9 @@
 package hexlet.code.component;
 
 
+import hexlet.code.model.Label;
 import hexlet.code.model.TaskStatus;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ public class DataInitializer implements ApplicationRunner {
 
     @Autowired
     private final TaskStatusRepository statusRepository;
+    @Autowired
+    private final LabelRepository labelRepository;
 
     @Autowired
     private final CustomUserDetailsService userService;
@@ -57,6 +61,14 @@ public class DataInitializer implements ApplicationRunner {
         status5.setName("Published");
         status5.setSlug("published");
         statusRepository.save(status5);
+
+        Label label1 = new Label();
+        label1.setName("feature");
+        labelRepository.save(label1);
+
+        Label label2 = new Label();
+        label2.setName("bug");
+        labelRepository.save(label2);
 
     }
 }
