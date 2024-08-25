@@ -10,7 +10,5 @@ spring:
   output:
     ansi:
       enabled: always
-  #profiles:
-    #default: dev
-    h2:
-      console.enabled: true
+  profiles:
+    default: dev
