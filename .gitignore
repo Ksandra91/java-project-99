@@ -43,10 +43,10 @@ node
 
 .env
 
-node_modules
-.tmp
+#node_modules
+#.tmp
 
-src/main/resources/static
+#src/main/resources/static
 !src/main/resources/static/.gitkeep
 
 # Logs
