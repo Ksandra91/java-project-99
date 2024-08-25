@@ -39,9 +39,9 @@ out/
 .DS_Store
 *.db
 
-node
+#node
 
-.env
+#.env
 
 #node_modules
 #.tmp
