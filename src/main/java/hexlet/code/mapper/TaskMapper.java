@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper(
         uses = {JsonNullableMapper.class, ReferenceMapper.class},
@@ -52,6 +53,7 @@ public abstract class TaskMapper {
     @Mapping(source = "description", target = "content")
     @Mapping(source = "assignee.id", target = "assigneeId")
     @Mapping(source = "taskStatus.slug", target = "status")
+    @Mapping(target = "labelsId", source = "labels", qualifiedByName = "labelsId")
     public abstract TaskDTO map(Task task);
 
 
@@ -72,6 +74,13 @@ public abstract class TaskMapper {
     @Named("labels")
     public List<Label> labelIdtoModel(List<Long> labelIds) {
         return labelIds == null ? new ArrayList<>() : labelRepository.findAllById(labelIds);
+    }
+
+    @Named("labelsId")
+    public List<Long> labelToLabelId(List<Label> labels) {
+        return labels == null ? new ArrayList<>() : labels.stream()
+                .map(Label::getId)
+                .collect(Collectors.toList());
     }
 }
 

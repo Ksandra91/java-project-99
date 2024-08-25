@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Setter
@@ -26,5 +26,5 @@ public class TaskDTO {
     private String content;
     @NonNull
     private String status;
-    private Set<Long> labelsId = new HashSet<>();
+    private List<Long> labelsId = new ArrayList<>();
 }
