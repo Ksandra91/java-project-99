@@ -10,7 +10,6 @@ import hexlet.code.mapper.TaskMapper;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import hexlet.code.exception.ResourceNotFoundException;
@@ -25,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -43,9 +42,9 @@ public class TaskController {
     private TaskSpecification taskSpecification;
 
     @GetMapping("")
-    ResponseEntity<List<TaskDTO>> index(TaskParamsDTO params, @RequestParam(defaultValue = "1") int page) {
+    public ResponseEntity<List<TaskDTO>> index(TaskParamsDTO params) {
         var spec = taskSpecification.build(params);
-        var tasks = repository.findAll(spec, PageRequest.of(page - 1, 10)).toList();
+        var tasks = repository.findAll(spec);
         var result = tasks.stream()
                 .map(taskMapper::map)
                 .toList();
@@ -58,6 +57,11 @@ public class TaskController {
     @ResponseStatus(HttpStatus.CREATED)
     public TaskDTO create(@Valid @RequestBody TaskCreateDTO taskData) {
         var task = taskMapper.map(taskData);
+        var asID = taskData.getAssigneeId();
+        var as = userRepository.findById(asID).get();
+        task.setAssignee(as);
+        repository.save(task);
+        userRepository.save(as);
         repository.save(task);
         var taskDTO = taskMapper.map(task);
         return taskDTO;
@@ -78,6 +82,11 @@ public class TaskController {
         var task = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not Found: " + id));
         taskMapper.update(taskData, task);
+//        taskMapper.update(taskData, task);
+//        var asID = taskData.getAssigneeId().get();
+//        var as = userRepository.findById(asID).get();
+//        task.setAssignee(as);
+//        taskRepository.save(task);
         repository.save(task);
         var taskDTO = taskMapper.map(task);
         return taskDTO;
