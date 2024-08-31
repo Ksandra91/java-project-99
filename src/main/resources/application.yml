@@ -13,7 +13,7 @@ spring:
     ansi:
       enabled: always
   profiles:
-    default: dev
+    #default: dev
 sentry:
   dsn: https://ee1710bda5636b030347e09ba02c73b6@o4507843071770624.ingest.us.sentry.io/4507843074981888
   traces-sample-rate: 1.0
