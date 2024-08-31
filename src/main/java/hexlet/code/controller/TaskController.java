@@ -53,6 +53,7 @@ public class TaskController {
                 .body(result);
     }
 
+
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     public TaskDTO create(@Valid @RequestBody TaskCreateDTO taskData) {
@@ -82,11 +83,6 @@ public class TaskController {
         var task = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not Found: " + id));
         taskMapper.update(taskData, task);
-//        taskMapper.update(taskData, task);
-//        var asID = taskData.getAssigneeId().get();
-//        var as = userRepository.findById(asID).get();
-//        task.setAssignee(as);
-//        taskRepository.save(task);
         repository.save(task);
         var taskDTO = taskMapper.map(task);
         return taskDTO;
@@ -97,4 +93,6 @@ public class TaskController {
     public void delete(@PathVariable Long id) {
         repository.deleteById(id);
     }
+
+
 }
