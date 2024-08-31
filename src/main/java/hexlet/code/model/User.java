@@ -2,12 +2,10 @@ package hexlet.code.model;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.GeneratedValue;
 import jakarta.validation.constraints.NotNull;
@@ -26,8 +24,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 
 @Entity
@@ -56,26 +52,10 @@ public class User implements BaseEntity, UserDetails {
     private String passwordDigest;
 
     @CreatedDate
-   // @Column(name = "created_at")
     private LocalDate createdAt;
 
     @LastModifiedDate
     private LocalDate updatedAt;
-
-
-    @OneToMany(mappedBy = "assignee", cascade = CascadeType.MERGE)
-    private Set<Task> tasks = new HashSet<>();
-
-
-    public void addTask(Task task) {
-        tasks.add(task);
-        task.setAssignee(this);
-    }
-
-    public void removeTask(Task task) {
-        tasks.remove(task);
-        task.setAssignee(null);
-    }
 
     @Override
     public String getPassword() {
