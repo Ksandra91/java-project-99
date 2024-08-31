@@ -111,10 +111,10 @@ public class TaskControllerTests {
 
     @AfterEach
     public void clean() {
-        taskRepository.deleteAll();
-        statusRepository.deleteAll();
-        labelRepository.deleteAll();
-        userRepository.deleteAll();
+        taskRepository.delete(testTask);
+        statusRepository.delete(testStatus);
+        labelRepository.delete(testLabel);
+        userRepository.delete(testUser);
     }
 
     @Test
@@ -191,6 +191,10 @@ public class TaskControllerTests {
         assertThat(taskFromRepo).isNotNull();
         assertThat(taskFromRepo.getName()).isEqualTo(testTask2.getTitle());
 
+        taskRepository.deleteById(taskFromRepo.getId());
+        statusRepository.delete(testStatus2);
+        labelRepository.delete(testLabel2);
+        userRepository.delete(testUser2);
     }
 
     @Test

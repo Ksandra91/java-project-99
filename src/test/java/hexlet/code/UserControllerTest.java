@@ -95,10 +95,10 @@ public class UserControllerTest {
 
     @AfterEach
     public void clean() {
-        taskRepository.deleteAll();
-        statusRepository.deleteAll();
-        labelRepository.deleteAll();
-        userRepository.deleteAll();
+       // taskRepository.deleteAll();
+       // statusRepository.deleteAll();
+      //  labelRepository.deleteAll();
+        userRepository.delete(testUser);
     }
 
 
@@ -142,6 +142,9 @@ public class UserControllerTest {
         assertNotNull(user);
         assertThat(user.getFirstName()).isEqualTo(data.getFirstName());
         assertThat(user.getLastName()).isEqualTo(data.getLastName());
+
+        userRepository.delete(user);
+        userRepository.delete(testUser);
     }
 
     @Test
@@ -163,6 +166,7 @@ public class UserControllerTest {
 
         var user = userRepository.findById(testUser2.getId()).get();
         assertThat(user.getFirstName()).isEqualTo(("first"));
+        userRepository.delete(testUser2);
     }
 
     @Test
@@ -216,5 +220,7 @@ public class UserControllerTest {
                 .andExpect(status().isForbidden());
 
         Assertions.assertThat(userRepository.existsById(user.getId())).isTrue();
+        userRepository.delete(user);
+        userRepository.delete(testUser);
     }
 }

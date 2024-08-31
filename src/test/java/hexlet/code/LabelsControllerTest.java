@@ -12,6 +12,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import hexlet.code.mapper.LabelMapper;
 import hexlet.code.model.Label;
 import hexlet.code.repository.LabelRepository;
+import hexlet.code.repository.TaskRepository;
+import hexlet.code.repository.TaskStatusRepository;
+import hexlet.code.repository.UserRepository;
+import hexlet.code.util.ModelGenerator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,6 +53,17 @@ public class LabelsControllerTest {
     private LabelMapper labelMapper;
 
     @Autowired
+    private TaskRepository taskRepository;
+
+    @Autowired
+    private ModelGenerator modelGenerator;
+
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private TaskStatusRepository statusRepository;
+
+    @Autowired
     private LabelRepository labelRepository;
     Label testLabel;
 
@@ -66,7 +81,11 @@ public class LabelsControllerTest {
 
     @AfterEach
     public void clean() {
-        labelRepository.deleteAll();
+        //labelRepository.deleteAll();
+        //taskRepository.deleteAll();
+       // statusRepository.deleteAll();
+        labelRepository.delete(testLabel);
+       // userRepository.deleteAll();
     }
 
     @Test
@@ -107,6 +126,7 @@ public class LabelsControllerTest {
 
         assertNotNull(label);
         assertThat(label.getName()).isEqualTo(data.getName());
+        labelRepository.delete(label);
 
     }
 
