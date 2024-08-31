@@ -50,6 +50,8 @@ dependencies {
 
 	implementation ("io.sentry:sentry-spring-boot-starter-jakarta:7.14.0")
 
+	implementation("org.postgresql:postgresql:42.7.4")
+
 
 
 }
