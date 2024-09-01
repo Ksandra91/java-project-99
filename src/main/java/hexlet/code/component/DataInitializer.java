@@ -15,7 +15,6 @@ import hexlet.code.service.CustomUserDetailsService;
 import hexlet.code.model.User;
 import lombok.AllArgsConstructor;
 
-
 @Component
 @AllArgsConstructor
 public class DataInitializer implements ApplicationRunner {
@@ -39,6 +38,8 @@ public class DataInitializer implements ApplicationRunner {
         var email = "hexlet@example.com";
         var userData = new User();
         userData.setEmail(email);
+        userData.setFirstName("Admin");
+        userData.setLastName("Admin");
         userData.setPasswordDigest("qwerty");
         userService.createUser(userData);
 
@@ -74,23 +75,5 @@ public class DataInitializer implements ApplicationRunner {
         Label label2 = new Label();
         label2.setName("bug");
         labelRepository.save(label2);
-
-//       TaskStatus testStatus = new TaskStatus();
-//        testStatus.setName("TestStatus");
-//        testStatus.setSlug("forTest");
-//        statusRepository.save(testStatus);
-//
-//       Label testLabel = new Label();
-//        testLabel.setName("testLabel");
-//        labelRepository.save(testLabel);
-//
-//       var user = userRepository.findByEmail(userData.getEmail());
-//        Task testTask = new Task();
-//        testTask.setName("TaskName");
-//        testTask.setAssignee(user.get());
-//        testTask.setTaskStatus(testStatus);
-//        testTask.setLabels(List.of(testLabel));
-//        taskRepository.save(testTask);
-
     }
 }

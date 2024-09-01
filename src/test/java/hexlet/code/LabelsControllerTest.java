@@ -84,7 +84,7 @@ public class LabelsControllerTest {
         //labelRepository.deleteAll();
         //taskRepository.deleteAll();
        // statusRepository.deleteAll();
-        labelRepository.delete(testLabel);
+        labelRepository.deleteAll();
        // userRepository.deleteAll();
     }
 
@@ -126,8 +126,6 @@ public class LabelsControllerTest {
 
         assertNotNull(label);
         assertThat(label.getName()).isEqualTo(data.getName());
-        labelRepository.delete(label);
-
     }
 
     @Test

@@ -1,19 +1,17 @@
 package hexlet.code.dto.TaskStatus;
 
-import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDate;
-
 
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class TaskStatusDTO {
-    private Long id;
-    @Size(min = 1)
+    private long id;
     private String name;
-    @Size(min = 1)
     private String slug;
-    private LocalDate createdAt;
+    private String createdAt;
 }

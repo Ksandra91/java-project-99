@@ -83,10 +83,10 @@ public class TaskStatusControllerTest {
     @AfterEach
     public void clean() {
         //statusRepository.deleteAll();
-       // taskRepository.deleteAll();
-        statusRepository.delete(testStatus);
-       // labelRepository.deleteAll();
-       // userRepository.deleteAll();
+        taskRepository.deleteAll();
+        statusRepository.deleteAll();
+        labelRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -128,9 +128,6 @@ public class TaskStatusControllerTest {
 
         assertNotNull(status);
         assertThat(status.getName()).isEqualTo(data.getName());
-
-        statusRepository.delete(status);
-
     }
 
     @Test

@@ -1,6 +1,5 @@
 package hexlet.code.dto.Task;
 
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +7,7 @@ import lombok.Setter;
 @Getter
 public class TaskParamsDTO {
     private String titleCont;
-    private long assigneeId;
+    private Long assigneeId;
     private String status;
-    private long labelId;
+    private Long labelId;
 }

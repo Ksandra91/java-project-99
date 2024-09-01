@@ -1,21 +1,21 @@
 package hexlet.code.dto.TaskStatus;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class TaskStatusCreateDTO {
 
-    @NotNull
-    @Size(min = 1)
+    @NotBlank
     private String name;
-
-    @NotNull
-    @Size(min = 1)
+    @NotBlank
     private String slug;
 
 }

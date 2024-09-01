@@ -111,10 +111,10 @@ public class TaskControllerTests {
 
     @AfterEach
     public void clean() {
-        taskRepository.delete(testTask);
-        statusRepository.delete(testStatus);
-        labelRepository.delete(testLabel);
-        userRepository.delete(testUser);
+        taskRepository.deleteAll();
+        statusRepository.deleteAll();
+        labelRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -123,6 +123,7 @@ public class TaskControllerTests {
                 .andExpect(status().isOk())
                 .andReturn();
         var body = result.getResponse().getContentAsString();
+        System.out.println(body);
         assertThatJson(body).isArray();
     }
 
@@ -171,7 +172,7 @@ public class TaskControllerTests {
         testTask2.setTitle("TaskName1111");
         testTask2.setAssigneeId(testUser.getId());
         testTask2.setStatus(testStatus.getSlug());
-        testTask2.setLabelsId(List.of(testLabel2.getId()));
+        testTask2.setTaskLabelIds(List.of(testLabel2.getId()));
 
         var token2 = jwt().jwt(builder -> builder.subject(testUser2.getEmail()));
 
@@ -190,11 +191,6 @@ public class TaskControllerTests {
 
         assertThat(taskFromRepo).isNotNull();
         assertThat(taskFromRepo.getName()).isEqualTo(testTask2.getTitle());
-
-        taskRepository.deleteById(taskFromRepo.getId());
-        statusRepository.delete(testStatus2);
-        labelRepository.delete(testLabel2);
-        userRepository.delete(testUser2);
     }
 
     @Test

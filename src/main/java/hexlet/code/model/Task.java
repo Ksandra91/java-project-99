@@ -1,6 +1,5 @@
 package hexlet.code.model;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
@@ -8,16 +7,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,8 +34,7 @@ public class Task implements BaseEntity {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @NotBlank
-    // @NotNull
+    @NotNull
     @Size(min = 1)
     private String name;
 
@@ -45,17 +42,14 @@ public class Task implements BaseEntity {
 
     private String description;
 
-    @NotNull
-    // @NotBlank
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     private TaskStatus taskStatus;
 
-
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     private User assignee;
 
-    @CreatedDate
-    private LocalDate createdAt;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
     @ManyToMany
     private List<Label> labels = new ArrayList<>();
