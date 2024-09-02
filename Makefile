@@ -9,8 +9,8 @@ build:
 install:
 	./gradlew clean install
 
-start-prod:
-	./gradlew bootRun
+start-dev:
+	./gradlew bootRun --args='--spring.profiles.active=dev'
 
 #install:
 #	./gradlew installDist

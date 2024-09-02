@@ -167,12 +167,15 @@ public class TaskControllerTests {
         Label testLabel2 = new Label();
         testLabel2.setName("testLabel1111111");
         labelRepository.save(testLabel2);
+        Label testLabel3 = new Label();
+        testLabel3.setName("testLabel2222222222");
+        labelRepository.save(testLabel3);
 
         TaskCreateDTO testTask2 = new TaskCreateDTO();
         testTask2.setTitle("TaskName1111");
         testTask2.setAssigneeId(testUser.getId());
-        testTask2.setStatus(testStatus.getSlug());
-        testTask2.setTaskLabelIds(List.of(testLabel2.getId()));
+        testTask2.setStatus(testStatus2.getSlug());
+        testTask2.setTaskLabelIds(List.of(testLabel2.getId(), testLabel3.getId()));
 
         var token2 = jwt().jwt(builder -> builder.subject(testUser2.getEmail()));
 
@@ -191,6 +194,9 @@ public class TaskControllerTests {
 
         assertThat(taskFromRepo).isNotNull();
         assertThat(taskFromRepo.getName()).isEqualTo(testTask2.getTitle());
+        assertThat(taskFromRepo.getAssignee().equals(testUser)).isTrue();
+        assertThat(taskFromRepo.getTaskStatus().getSlug().equals(testStatus2.getSlug())).isTrue();
+        assertThat(taskFromRepo.getLabels().size() == 2).isTrue();
     }
 
     @Test
