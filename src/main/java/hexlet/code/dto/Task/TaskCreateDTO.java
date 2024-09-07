@@ -7,7 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.List;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Setter
@@ -19,18 +21,17 @@ public class TaskCreateDTO {
 
     private Integer index;
 
-    @NotNull
     @JsonProperty("assignee_id")
-    private Long assigneeId;
+    private long assigneeId;
 
     @NotBlank
     private String title;
 
     private String content;
 
-    @NotBlank
+    @NotNull
     private String status;
 
-    private List<Long> taskLabelIds;
+    private Set<Long> taskLabelIds = new HashSet<>();
 
 }

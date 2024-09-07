@@ -35,8 +35,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -104,7 +104,7 @@ public class TaskControllerTests {
         testTask.setName("TaskName");
         testTask.setAssignee(testUser);
         testTask.setTaskStatus(testStatus);
-        testTask.setLabels(List.of(testLabel));
+        testTask.setLabels(Set.of(testLabel));
         taskRepository.save(testTask);
         token = jwt().jwt(builder -> builder.subject(testUser.getEmail()));
     }
@@ -175,7 +175,7 @@ public class TaskControllerTests {
         testTask2.setTitle("TaskName1111");
         testTask2.setAssigneeId(testUser.getId());
         testTask2.setStatus(testStatus2.getSlug());
-        testTask2.setTaskLabelIds(List.of(testLabel2.getId(), testLabel3.getId()));
+        testTask2.setTaskLabelIds(Set.of(testLabel2.getId(), testLabel3.getId()));
 
         var token2 = jwt().jwt(builder -> builder.subject(testUser2.getEmail()));
 
@@ -191,12 +191,12 @@ public class TaskControllerTests {
         assertThat(taskRepository.findById(id)).isPresent();
 
         var taskFromRepo = taskRepository.findById(id).get();
-
+        Set<Label> labels = taskFromRepo.getLabels();
         assertThat(taskFromRepo).isNotNull();
         assertThat(taskFromRepo.getName()).isEqualTo(testTask2.getTitle());
         assertThat(taskFromRepo.getAssignee().equals(testUser)).isTrue();
         //assertThat(taskFromRepo.getTaskStatus().getSlug().equals(testStatus2.getSlug())).isTrue();
-        assertThat(taskFromRepo.getLabels().size() == 2).isTrue();
+        assertThat(labels.size() == 2).isTrue();
     }
 
     @Test
