@@ -19,6 +19,7 @@ import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.util.ModelGenerator;
+import org.assertj.core.api.Assertions;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -227,5 +228,6 @@ public class TaskControllerTests {
                 .with(token);
         mockMvc.perform(request)
                 .andExpect(status().isNoContent());
+        Assertions.assertThat(taskRepository.existsById(testTask.getId())).isFalse();
     }
 }

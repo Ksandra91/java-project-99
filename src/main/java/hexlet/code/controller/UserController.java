@@ -7,7 +7,7 @@ import hexlet.code.dto.User.UserDTO;
 import hexlet.code.dto.User.UserUpdateDTO;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,14 +24,11 @@ import hexlet.code.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api")
 public class UserController {
-    @Autowired
     private UserRepository repository;
-
-    @Autowired
     private UserMapper userMapper;
-
     private static final String ONLY_OWNER = """
                 @userRepository.findById(#id).get().getEmail() == authentication.getName()
             """;

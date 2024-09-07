@@ -7,7 +7,7 @@ import hexlet.code.dto.Label.LabelDTO;
 import hexlet.code.dto.Label.LabelUpdateDTO;
 import hexlet.code.mapper.LabelMapper;
 import hexlet.code.repository.LabelRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,13 +23,11 @@ import hexlet.code.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/labels")
 public class LabelController {
-    @Autowired
-    private LabelRepository repository;
-
-    @Autowired
-    private LabelMapper labelMapper;
+    private final LabelRepository repository;
+    private final LabelMapper labelMapper;
 
     @GetMapping("")
     ResponseEntity<List<LabelDTO>> index() {

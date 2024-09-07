@@ -6,7 +6,7 @@
 
 Task Manager – a task management system similar to http://www.redmine.org/. It allows you to set tasks, assign performers and change their statuses. 
 Registration and authentication are required to work with the system.
-### [Demo](https://task-manager-wbcw.onrender.com)
+### [Link to demo](https://task-manager-wbcw.onrender.com)
 
 *Login:* hexlet@example.com
 

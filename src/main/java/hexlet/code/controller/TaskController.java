@@ -9,7 +9,7 @@ import hexlet.code.dto.Task.TaskUpdateDTO;
 import hexlet.code.mapper.TaskMapper;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import hexlet.code.exception.ResourceNotFoundException;
@@ -27,18 +27,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/tasks")
 public class TaskController {
-    @Autowired
-    private TaskRepository repository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
+    private final TaskRepository repository;
+    private final UserRepository userRepository;
     private TaskMapper taskMapper;
-
-    @Autowired
     private TaskSpecification taskSpecification;
 
     @GetMapping("")
