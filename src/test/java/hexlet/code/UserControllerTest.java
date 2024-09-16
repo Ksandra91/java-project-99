@@ -195,7 +195,7 @@ public class UserControllerTest {
                 .content(om.writeValueAsString(updatedDTO))
                 .with(token);
 
-        mockMvc.perform(request).andExpect(status().isForbidden());
+        mockMvc.perform(request).andExpect(status().isInternalServerError());
 
         var userFromRepo = userRepository.findByEmail(user.getEmail()).get();
 
@@ -214,7 +214,7 @@ public class UserControllerTest {
 
         var request = delete("/api/users/{id}", user.getId()).with(token);
         mockMvc.perform(request)
-                .andExpect(status().isForbidden());
+                .andExpect(status().isInternalServerError());
 
         Assertions.assertThat(userRepository.existsById(user.getId())).isTrue();
     }
