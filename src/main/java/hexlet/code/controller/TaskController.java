@@ -52,11 +52,6 @@ public class TaskController {
     @ResponseStatus(HttpStatus.CREATED)
     public TaskDTO create(@Valid @RequestBody TaskCreateDTO taskData) {
         var task = taskMapper.map(taskData);
-        var asID = taskData.getAssigneeId();
-        var as = userRepository.findById(asID).get();
-        task.setAssignee(as);
-        repository.save(task);
-        userRepository.save(as);
         repository.save(task);
         var taskDTO = taskMapper.map(task);
         return taskDTO;
