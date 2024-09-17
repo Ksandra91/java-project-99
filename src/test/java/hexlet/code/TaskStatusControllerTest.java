@@ -83,7 +83,6 @@ public class TaskStatusControllerTest {
 
     @AfterEach
     public void clean() {
-        //statusRepository.deleteAll();
         taskRepository.deleteAll();
         statusRepository.deleteAll();
         labelRepository.deleteAll();

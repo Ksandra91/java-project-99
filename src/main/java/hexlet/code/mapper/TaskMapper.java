@@ -76,9 +76,7 @@ public abstract class TaskMapper {
         if (labelIds.isEmpty()) {
             return labels;
         } else {
-            for (var id : labelIds) {
-                labels.add(labelRepository.findById(id).get());
-            }
+            labels = labelRepository.findByIdIn(labelIds);
         }
         return labels;
     }

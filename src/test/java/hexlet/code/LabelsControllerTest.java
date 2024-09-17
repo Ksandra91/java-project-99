@@ -82,11 +82,10 @@ public class LabelsControllerTest {
 
     @AfterEach
     public void clean() {
-        //labelRepository.deleteAll();
-        //taskRepository.deleteAll();
-       // statusRepository.deleteAll();
+        taskRepository.deleteAll();
+        statusRepository.deleteAll();
         labelRepository.deleteAll();
-       // userRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
